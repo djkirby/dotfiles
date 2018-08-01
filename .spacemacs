@@ -18,6 +18,7 @@ values."
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
    '(
+     lua
      octave
      rust
      auto-completion
@@ -55,7 +56,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(multiple-cursors discover-my-major stylus-mode solidity-mode google-translate pivotal-tracker prettier-js npm-mode restclient)
+   dotspacemacs-additional-packages '(multiple-cursors discover-my-major stylus-mode solidity-mode google-translate pivotal-tracker prettier-js npm-mode restclient indium helm-dash kubernetes)
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '(smartparens)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -262,6 +263,10 @@ values."
       (helm-projectile-find-file)
     (call-interactively 'spacemacs/helm-find-files)))
 
+
+
+
+
 ;; Project tools
 (global-set-key (kbd "s-p") 'find-file-context)
 (global-set-key (kbd "s-/") 'spacemacs/comment-or-uncomment-lines)
@@ -310,16 +315,24 @@ layers configuration. You are free to put any user code."
   ;;(add-to-list 'auto-mode-alist '("\\.jsx$" . react-mode))
   (setq-default web-mode-enable-auto-quoting nil)
 
+  (load "~/git/ua-translate.el/ua-translate.el")
+  (load "~/git/prop-types.el/prop-types.el")
+
 
   (prodigy-define-service
-    :name "UA Frontend"
+    :name "UA Frontend - 3000"
     :command "yarn"
     :args '("start")
     :cwd "~/git/b2b-intl-web")
   (prodigy-define-service
-    :name "UA API Proxy"
+    :name "UA API Proxy - 33100"
     :command "~/git/b2b-intl-web/scripts/proxy.sh"
     :args '("api" "33100")
+    :stop-signal 'kill)
+  (prodigy-define-service
+    :name "UA GraphQL Proxy - 8080"
+    :command "~/git/b2b-intl-web/scripts/proxy.sh"
+    :args '("grafiki" "8080" "8080")
     :stop-signal 'kill)
   (prodigy-define-service
     :name "UA Storybook"
@@ -410,11 +423,12 @@ layers configuration. You are free to put any user code."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(electric-indent-mode nil)
+ '(js-indent-level 2)
  '(js2-basic-offset 2 t)
  '(js2-indent-switch-body nil)
  '(package-selected-packages
    (quote
-    (restclient npm-mode powerline marshal haml-mode simple-httpd prettier-js slack emojify circe oauth2 websocket typescript-mode org-category-capture packed avy inflections cider queue clojure-mode tern iedit smartparens evil goto-chg elixir-mode flycheck company projectile helm helm-core yasnippet multiple-cursors markdown-mode alert org-plus-contrib magit magit-popup git-commit with-editor async hydra rust-mode js2-mode dash s twittering-mode pivotal-tracker yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toml-mode toc-org tide tagedit stylus-mode sql-indent spaceline solidity-mode smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reveal-in-osx-finder restart-emacs rbenv rake rainbow-delimiters racer pug-mode prodigy popwin persp-mode pbcopy paradox osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file ob-elixir neotree mwim multi-term move-text mmm-mode minitest markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode launchctl json-mode js2-refactor js-doc info+ indent-guide hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio go-guru go-eldoc gnuplot github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist gh-md fuzzy flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-mix flycheck-elm flycheck-credo flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erlang engine-mode emoji-cheat-sheet-plus emmet-mode elm-mode elisp-slime-nav dumb-jump discover-my-major company-web company-tern company-statistics company-go company-emoji column-enforce-mode color-theme-sanityinc-tomorrow coffee-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu chruby cargo bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile alchemist aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (lua-mode kubernetes ghub quelpa ghub+ org-mime paredit bind-key inf-ruby dash-functional highlight f epl flyspell-correct gh ht go-mode gitignore-mode helm-dash indium restclient npm-mode powerline marshal haml-mode simple-httpd prettier-js slack emojify circe oauth2 websocket typescript-mode org-category-capture packed avy inflections cider queue clojure-mode tern iedit smartparens evil goto-chg elixir-mode flycheck company projectile helm helm-core yasnippet multiple-cursors markdown-mode alert org-plus-contrib magit magit-popup git-commit with-editor async hydra rust-mode js2-mode dash s twittering-mode pivotal-tracker yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toml-mode toc-org tide tagedit stylus-mode sql-indent spaceline solidity-mode smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reveal-in-osx-finder restart-emacs rbenv rake rainbow-delimiters racer pug-mode prodigy popwin persp-mode pbcopy paradox osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file ob-elixir neotree mwim multi-term move-text mmm-mode minitest markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode launchctl json-mode js2-refactor js-doc info+ indent-guide hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio go-guru go-eldoc gnuplot github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist gh-md fuzzy flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-mix flycheck-elm flycheck-credo flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erlang engine-mode emoji-cheat-sheet-plus emmet-mode elm-mode elisp-slime-nav dumb-jump discover-my-major company-web company-tern company-statistics company-go company-emoji column-enforce-mode color-theme-sanityinc-tomorrow coffee-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu chruby cargo bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile alchemist aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(pivotal-api-token "4edd34a6100dd325fd21fe93a9515742")
  '(safe-local-variable-values
    (quote
